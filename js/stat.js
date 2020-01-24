@@ -7,6 +7,14 @@ var GAP = 50;
 var GRAPH_WIDTH = 40;
 var GRAPH_MAX_HEIGHT = 150;
 
+/** Отрисовывает прямоугольное поле для вывода статистики
+ *
+ * @param {*} ctx - Контекст рендеринга canvas
+ * @param {integer} x - Положение окна по вертикальной оси
+ * @param {integer} y -  Положение окна по горизонтальной оси
+ * @param {string} color - Цвет
+ */
+
 var renderCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
@@ -14,6 +22,13 @@ var renderCloud = function (ctx, x, y, color) {
   ctx.strokeRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
 
 };
+
+/** Выводит поле с графиками результатов игроков
+ *
+ * @param {*} -  Контекст рендеринга canvas
+ * @param {array} - Список имен игроков
+ * @param {array} - Список результатов времени
+ */
 
 window.renderStatistics = function (ctx) {
 
@@ -46,7 +61,15 @@ window.renderStatistics = function (ctx) {
 };
 
 
-// Находит процентное соотношение результатов времени
+/** Находит процентное соотношение результатов времени
+  *
+  * @param {array} times - массив результатов времени игроков
+  * @return {array}
+  * @example
+  *
+  * getPercentage([2500, 1000, 500, 250]);
+  * // => [100, 40, 20, 10]
+*/
 
 var getPercentage = function (times) {
 
@@ -60,16 +83,26 @@ var getPercentage = function (times) {
   return percentageArray;
 };
 
-// Находим высоту графика каждого результата
+
+/** Находим высоту графика каждого результата
+ *
+ * @param {array} percentageArray - массив процентных соотношений результатов
+ * @return {array}
+ * @example
+ *
+ * getGraphHeight([100, 40, 20, 10]);
+ * // => [150, 60, 30, 15]
+ */
+
 var getGraphHeight = function (percentageArray) {
 
   var graphHeighthArray = [];
 
   percentageArray.forEach(function (item) {
-    graphHeighthArray.pop(150 * (item / 100));
+    graphHeighthArray.push(150 * (item / 100));
   });
 
   return graphHeighthArray;
-}
+};
 
 
