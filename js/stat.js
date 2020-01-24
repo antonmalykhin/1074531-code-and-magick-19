@@ -1,63 +1,83 @@
 'use strict';
 
-var CLOUD_WIDTH = 500;
+/** @constant
+  * @type {number}
+  */
+var CLOUD_WIDTH = 410;
+
+/** @constant
+  * @type {number}
+  */
 var CLOUD_HEIGHT = 270;
-var GRAPH_X = 150;
+
+/** @constant
+  * @type {number}
+  */
+var CLOUD_POSITION_X = 150;
+
+/** @constant
+  * @type {number}
+  */
+var CLOUD_POSITION_Y = 10;
+
+/** @constant
+  * @type {number}
+  */
 var GAP = 50;
+
+/** @constant
+  * @type {number}
+  */
 var GRAPH_WIDTH = 40;
+
+/** @constant
+  * @type {number}
+  */
 var GRAPH_MAX_HEIGHT = 150;
+
+/** @constant
+  * @type {string}
+  */
+var TEXT_COLOR = '#000';
+
 
 /** Отрисовывает прямоугольное поле для вывода статистики
  *
  * @param {*} ctx - Контекст рендеринга canvas
- * @param {integer} x - Положение окна по вертикальной оси
- * @param {integer} y -  Положение окна по горизонтальной оси
+ * @param {number} x - Положение окна по вертикальной оси
+ * @param {number} y -  Положение окна по горизонтальной оси
  * @param {string} color - Цвет
  */
 
-var renderCloud = function (ctx, x, y, color) {
+var renderRectCloud = function (ctx, x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
-  ctx.strokeStyle = 'black';
+  ctx.strokeStyle = '#000';
   ctx.strokeRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
 
 };
 
-/** Выводит поле с графиками результатов игроков
+
+/** Отрисовывает график результата игрока
  *
- * @param {*} -  Контекст рендеринга canvas
- * @param {array} - Список имен игроков
- * @param {array} - Список результатов времени
+ * @param {*} ctx - Контекст рендеринга canvas
+ * @param {number} graphIndex - порядковый номер графика
+ * @param {string} gamerName - Имя игрока
+ * @param {number} gamerTime - Результат затраченного времени
+ * @param {number} graphHeight - высота графика
+ * @param {string} graphColor - цвет графика
  */
 
-window.renderStatistics = function (ctx) {
+var renderGraph = function (ctx, graphIndex, gamerName, gamerTime, graphHeight, graphColor) {
 
-  renderCloud(ctx, 110, 20, 'rgba(0, 0, 0, 0.3)');
-  renderCloud(ctx, 100, 10, '#fff');
+  var graphHeightOffset = GRAPH_MAX_HEIGHT - graphHeight;
+  var graphPositionX = (CLOUD_POSITION_X + 50) + (GRAPH_WIDTH + GAP) * graphIndex;
 
-  ctx.fillStyle = '#000';
-  ctx.fillText('Ура вы победили!', 273, 30);
-  ctx.fillText('Список результатов:', 260, 50);
-
-  var offset = 100;
-
-  ctx.fillStyle = 'red';
-  ctx.fillRect(GRAPH_X, 100 + offset, GRAPH_WIDTH, GRAPH_MAX_HEIGHT - offset);
-  ctx.fillStyle = '#000';
-  ctx.fillText('Вы', GRAPH_X, CLOUD_HEIGHT);
-  ctx.fillText(String(1000), GRAPH_X, 100 + offset - 10);
-
-  ctx.fillStyle = 'blue';
-  ctx.fillRect(GRAPH_X + GRAPH_WIDTH + GAP, 100 + offset, GRAPH_WIDTH, GRAPH_MAX_HEIGHT - offset);
-  ctx.fillStyle = '#000';
-  ctx.fillText('Keks', GRAPH_X + GRAPH_WIDTH + GAP, CLOUD_HEIGHT);
-  ctx.fillText(String(2500), GRAPH_X + GRAPH_WIDTH + GAP, 100 + offset - 10);
-
-  // ctx.fillText = ('Иван', 100, 75);
-  // ctx.fillRect = (100, 60, 480, 20);
-
-  // ctx.fillText = ('Юлия', 100, 75);
-  // ctx.fillRect = (100, 60, 480, 20);
+  ctx.fillStyle = graphColor;
+  ctx.fillRect(graphPositionX, 100 + graphHeightOffset, GRAPH_WIDTH, GRAPH_MAX_HEIGHT - graphHeightOffset);
+  ctx.fillStyle = TEXT_COLOR;
+  ctx.fillText(gamerName, graphPositionX, CLOUD_HEIGHT);
+  ctx.fillText(String(gamerTime), graphPositionX, 100 + graphHeightOffset - 10);
 };
 
 
@@ -106,3 +126,30 @@ var getGraphHeight = function (percentageArray) {
 };
 
 
+/** Выводит поле с графиками результатов игроков
+ *
+ * @param {*} -  Контекст рендеринга canvas
+ * @param {array} names- Список имен игроков
+ * @param {array} times - Список результатов затраченного времени
+ */
+
+window.renderStatistics = function (ctx, names, times) {
+
+  renderRectCloud(ctx, CLOUD_POSITION_X + 10, CLOUD_POSITION_Y + 10, 'rgba(0, 0, 0, 0.7)');
+  renderRectCloud(ctx, CLOUD_POSITION_X, CLOUD_POSITION_Y, '#fff');
+
+  ctx.fillStyle = TEXT_COLOR;
+  ctx.fillText('Ура вы победили!', 280, 40);
+  ctx.fillText('Список результатов:', 265, 60);
+
+  for (var i = 0; i < names.length; i++) {
+
+    var percentage = getPercentage(times);
+    var graphsHeight = getGraphHeight(percentage);
+    var randomSaturation = Math.round(Math.random() * 100);
+
+    var graphColor = (names[i] === 'Вы') ? '#ff0000' : 'hsl(240, ' + randomSaturation + '% , 50%)';
+
+    renderGraph(ctx, i, names[i], Math.round(times[i]), graphsHeight[i], graphColor);
+  }
+};
