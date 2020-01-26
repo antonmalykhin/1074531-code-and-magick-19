@@ -1,47 +1,103 @@
 'use strict';
 
-/** @constant
-  * @type {number}
-  */
-var CLOUD_WIDTH = 410;
+/**
+ * Класс константы
+ */
+var constants = {
+  /**
+   * Ширина окна статистики
+   * @constant
+   * @type {number}
+   */
+  CLOUD_WIDTH: 410,
 
-/** @constant
-  * @type {number}
-  */
-var CLOUD_HEIGHT = 270;
+  /**
+   * Высота окна статистики
+   * @constant
+   * @type {number}
+   */
+  CLOUD_HEIGHT: 270,
 
-/** @constant
-  * @type {number}
-  */
-var CLOUD_POSITION_X = 150;
+  /**
+   * Положение окна статистики по горизонтали
+   * @constant
+   * @type {number}
+   */
+  CLOUD_POSITION_X: 150,
 
-/** @constant
-  * @type {number}
-  */
-var CLOUD_POSITION_Y = 10;
+  /**
+   * Положение окна статистики по вертикали
+   * @constant
+   * @type {number}
+   */
+  CLOUD_POSITION_Y: 10,
 
-/** @constant
-  * @type {number}
-  */
-var GAP = 50;
+  /**
+   * Цвет окна статистики
+   * @constant
+   * @param {string}
+   */
+  CLOUD_COLOR: '#ffffff',
 
-/** @constant
-  * @type {number}
-  */
-var GRAPH_WIDTH = 40;
+  /**
+   * Цвет тени окна статистики
+   * @constant
+   * @type {string}
+   */
+  CLOUD_SHADOW_COLOR: 'rgba(0, 0, 0, 0.7)',
 
-/** @constant
-  * @type {number}
-  */
-var GRAPH_MAX_HEIGHT = 150;
+  /**
+   * Расстояние между графиками
+   * @constant
+   * @type {number}
+   */
+  GAP: 50,
 
-/** @constant
-  * @type {string}
-  */
-var TEXT_COLOR = '#000';
+  /**
+   * Ширина графика
+   * @constant
+   * @type {number}
+   */
+  GRAPH_WIDTH: 40,
 
+  /**
+   * Максимальная высота графика
+   * @constant
+   * @type {number}
+   */
+  GRAPH_MAX_HEIGHT: 150,
 
-/** Отрисовывает прямоугольное поле для вывода статистики
+  /**
+   * Цвет текста
+   * @constant
+   * @type {string}
+   */
+  TEXT_COLOR: '#000000',
+
+  /**
+   * Положение текста заголовка окна статистики по горизонтали
+   * @constant
+   * @type {number}
+   */
+  CLOUD_TITLE_POSITION_X: 280,
+
+  /**
+   * Положение текста заголовка окна статистики по вертикали
+   * @constant
+   * @type {number}
+   */
+  CLOUD_TITLE_POSITION_Y: 40,
+
+  /**
+   * Расстояние между строк заголовка окна статистики
+   * @constant
+   * @type {number}
+   */
+  CLOUD_TITLE_VERTICAL_GAP: 20,
+};
+
+/**
+ * Отрисовывает прямоугольное поле для вывода статистики
  *
  * @param {*} ctx - Контекст рендеринга canvas
  * @param {number} x - Положение окна по вертикальной оси
@@ -49,16 +105,17 @@ var TEXT_COLOR = '#000';
  * @param {string} color - Цвет
  */
 
-var renderRectCloud = function (ctx, x, y, color) {
+var renderCloud = function (ctx, x, y, shadowOffsetX, shadowOffsetY, color) {
+  ctx.fillStyle = constants.CLOUD_SHADOW_COLOR;
+  ctx.fillRect(x + shadowOffsetX, y + shadowOffsetX, constants.CLOUD_WIDTH, constants.CLOUD_HEIGHT);
   ctx.fillStyle = color;
-  ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
+  ctx.fillRect(x, y, constants.CLOUD_WIDTH, constants.CLOUD_HEIGHT);
   ctx.strokeStyle = '#000';
-  ctx.strokeRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
-
+  ctx.strokeRect(x, y, constants.CLOUD_WIDTH, constants.CLOUD_HEIGHT);
 };
 
-
-/** Отрисовывает график результата игрока
+/**
+ * Отрисовывает график результата игрока
  *
  * @param {*} ctx - Контекст рендеринга canvas
  * @param {number} graphIndex - порядковый номер графика
@@ -70,63 +127,40 @@ var renderRectCloud = function (ctx, x, y, color) {
 
 var renderGraph = function (ctx, graphIndex, gamerName, gamerTime, graphHeight, graphColor) {
 
-  var graphHeightOffset = GRAPH_MAX_HEIGHT - graphHeight;
-  var graphPositionX = (CLOUD_POSITION_X + 50) + (GRAPH_WIDTH + GAP) * graphIndex;
+  var graphHeightOffset = constants.GRAPH_MAX_HEIGHT - graphHeight;
+  var graphPositionX = (constants.CLOUD_POSITION_X + 50) + (constants.GRAPH_WIDTH + constants.GAP) * graphIndex;
 
   ctx.fillStyle = graphColor;
-  ctx.fillRect(graphPositionX, 100 + graphHeightOffset, GRAPH_WIDTH, GRAPH_MAX_HEIGHT - graphHeightOffset);
-  ctx.fillStyle = TEXT_COLOR;
-  ctx.fillText(gamerName, graphPositionX, CLOUD_HEIGHT);
+  ctx.fillRect(graphPositionX, 100 + graphHeightOffset, constants.GRAPH_WIDTH, constants.GRAPH_MAX_HEIGHT - graphHeightOffset);
+  ctx.fillStyle = constants.TEXT_COLOR;
+  ctx.fillText(gamerName, graphPositionX, constants.CLOUD_HEIGHT);
   ctx.fillText(String(gamerTime), graphPositionX, 100 + graphHeightOffset - 10);
 };
 
-
-/** Находит процентное соотношение результатов времени
-  *
-  * @param {array} times - массив результатов времени игроков
-  * @return {array}
-  * @example
-  *
-  * getPercentage([2500, 1000, 500, 250]);
-  * // => [100, 40, 20, 10]
-*/
-
-var getPercentage = function (times) {
-
-  var maxTime = Math.max.apply(null, times);
-  var percentageArray = [];
-
-  times.forEach(function (item) {
-    percentageArray.push(Math.round(100 * item / maxTime));
-  });
-
-  return percentageArray;
-};
-
-
-/** Находим высоту графика каждого результата
- *
- * @param {array} percentageArray - массив процентных соотношений результатов
- * @return {array}
+/**
+ * Находим высоту графика каждого результата
+ * @param {array} times - массив результатов времени
+ * @return {array} - массив высот графиков
  * @example
  *
- * getGraphHeight([100, 40, 20, 10]);
+ * getPercentage([2500, 1000, 500, 250]);
  * // => [150, 60, 30, 15]
  */
 
-var getGraphHeight = function (percentageArray) {
+var getGraphHeight = function (times) {
+  var maxTime = Math.max.apply(null, times);
+  var graphsHeighth = [];
 
-  var graphHeighthArray = [];
-
-  percentageArray.forEach(function (item) {
-    graphHeighthArray.push(150 * (item / 100));
+  times.forEach(function (time) {
+    var percent = Math.round(100 * time / maxTime);
+    graphsHeighth.push(150 * (percent / 100));
   });
 
-  return graphHeighthArray;
+  return graphsHeighth;
 };
 
-
-/** Выводит поле с графиками результатов игроков
+/**
+ * Выводит окно с графиками результатов игроков
  *
  * @param {*} -  Контекст рендеринга canvas
  * @param {array} names- Список имен игроков
@@ -135,17 +169,15 @@ var getGraphHeight = function (percentageArray) {
 
 window.renderStatistics = function (ctx, names, times) {
 
-  renderRectCloud(ctx, CLOUD_POSITION_X + 10, CLOUD_POSITION_Y + 10, 'rgba(0, 0, 0, 0.7)');
-  renderRectCloud(ctx, CLOUD_POSITION_X, CLOUD_POSITION_Y, '#fff');
+  renderCloud(ctx, constants.CLOUD_POSITION_X, constants.CLOUD_POSITION_Y, 10, 10, constants.CLOUD_COLOR);
 
-  ctx.fillStyle = TEXT_COLOR;
-  ctx.fillText('Ура вы победили!', 280, 40);
-  ctx.fillText('Список результатов:', 265, 60);
+  ctx.fillStyle = constants.TEXT_COLOR;
+  ctx.fillText('Ура вы победили!', constants.CLOUD_TITLE_POSITION_X, constants.CLOUD_TITLE_POSITION_Y);
+  ctx.fillText('Список результатов:', constants.CLOUD_TITLE_POSITION_X - 15, constants.CLOUD_TITLE_POSITION_Y + constants.CLOUD_TITLE_VERTICAL_GAP);
 
   for (var i = 0; i < names.length; i++) {
 
-    var percentage = getPercentage(times);
-    var graphsHeight = getGraphHeight(percentage);
+    var graphsHeight = getGraphHeight(times);
     var randomSaturation = Math.round(Math.random() * 100);
 
     var graphColor = (names[i] === 'Вы') ? '#ff0000' : 'hsl(240, ' + randomSaturation + '% , 50%)';
