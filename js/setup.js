@@ -62,6 +62,20 @@ var PersonageData = {
 };
 
 /**
+ * Кнопка Escape
+ * @constant
+ * @type {string}
+ */
+var ESC_KEY = 'Escape';
+
+/**
+ * Кнопка Enter
+ * @constant
+ * @type {string}
+ */
+var ENTER_KEY = 'Enter';
+
+/**
  * Функция получения списка рандомных свойств определенного количества персонажей
  * @param {array} personage - Объект свойств персонажа
  * @param {number} numOfPersons - Количество генерируемых персонажей
@@ -82,9 +96,73 @@ var getPersonages = function (personage, numOfPersons) {
 };
 
 var userSetup = document.querySelector('.setup');
-userSetup.classList.remove('hidden');
+var closeSetupButton = userSetup.querySelector('.setup-close');
+var openSetupButton = document.querySelector('.setup-open');
+var openSetupIcon = openSetupButton.querySelector('.setup-open-icon');
+var userNameInput = userSetup.querySelector('.setup-user-name');
 
-document.querySelector('.setup-similar').classList.remove('hidden');
+/**
+ * Функция нажатия на кнопку Escape
+ * @param {*} evt - event
+ */
+var onEscapeKeyPress = function (evt) {
+  if (evt.key === ESC_KEY && !userSetup.classList.contains('hidden')) {
+    userSetup.classList.add('hidden');
+  }
+};
+
+/**
+ * Функция открытия окна настроек персонажа
+ */
+var openSetup = function () {
+  if (userSetup.classList.contains('hidden')) {
+    userSetup.classList.remove('hidden');
+    document.addEventListener('keydown', onEscapeKeyPress);
+  }
+};
+
+/**
+ * Функция закрытия окна настроек персонажа
+ */
+var closeSetup = function () {
+  if (!userSetup.classList.contains('hidden')) {
+    userSetup.classList.add('hidden');
+    document.removeEventListener('keydown', onEscapeKeyPress);
+  }
+};
+
+/**
+ * Функция нажатия на кнопку Enter при фокусе на иконке пользователя
+ * @param {*} evt - event
+ */
+var onIconEnterPress = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    openSetup();
+  }
+};
+
+/**
+ * Функция нажатия на кнопку Enter при фокусе на иконке закрытия
+ * @param {*} evt - event
+ */
+var onCloseEnterPress = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    closeSetup();
+  }
+};
+
+userNameInput.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onEscapeKeyPress);
+});
+
+userNameInput.addEventListener('blur', function () {
+  document.addEventListener('keydown', onEscapeKeyPress);
+});
+
+openSetupButton.addEventListener('click', openSetup);
+closeSetupButton.addEventListener('click', closeSetup);
+openSetupIcon.addEventListener('keydown', onIconEnterPress);
+closeSetupButton.addEventListener('keydown', onCloseEnterPress);
 
 var wizards = getPersonages(PersonageData, 4);
 
