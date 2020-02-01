@@ -63,24 +63,20 @@ var PersonageData = {
 
 /**
  * Функция получения списка рандомных свойств определенного количества персонажей
- * @param {array} firstNames - Список имен персонажа
- * @param {array} lastNames - Список фамилий персонажа
- * @param {array} coastColors - Список цветов одежды персонажа
- * @param {array} eyesColors - Список цветов глаз персонажа
+ * @param {array} personage - Объект свойств персонажа
  * @param {number} numOfPersons - Количество генерируемых персонажей
  * @return {array} - Списка рандомных свойств персонажей
  */
-var getPersonages = function (firstNames, lastNames, coastColors, eyesColors, numOfPersons) {
+var getPersonages = function (personage, numOfPersons) {
   var personages = [];
 
   for (var i = 0; i < numOfPersons; i++) {
-    var personage = {};
-    personage.firstName = firstNames[Math.round(Math.random() * firstNames.length)];
-    personage.lastName = lastNames[Math.round(Math.random() * lastNames.length)];
-    personage.coastColor = coastColors[Math.round(Math.random() * coastColors.length)];
-    personage.eyesColor = eyesColors[Math.round(Math.random() * eyesColors.length)];
-
-    personages.push(personage);
+    personages.push({
+      firstName: personage.FIRST_NAMES[Math.round(Math.random() * personage.FIRST_NAMES.length)],
+      lastName: personage.LAST_NAMES[Math.round(Math.random() * personage.LAST_NAMES.length)],
+      coastColor: personage.COAST_COLORS[Math.round(Math.random() * personage.COAST_COLORS.length)],
+      eyesColor: personage.EYES_COLORS[Math.round(Math.random() * personage.EYES_COLORS.length)]
+    });
   }
   return personages;
 };
@@ -90,24 +86,29 @@ userSetup.classList.remove('hidden');
 
 document.querySelector('.setup-similar').classList.remove('hidden');
 
-var similarListElement = document.querySelector('.setup-similar-list');
-var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+var wizards = getPersonages(PersonageData, 4);
 
-var fragment = document.createDocumentFragment();
+var generatePersonagesMarkup = function (personages) {
+  var similarListElement = document.querySelector('.setup-similar-list');
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
-var wizards = getPersonages(PersonageData.FIRST_NAMES, PersonageData.LAST_NAMES, PersonageData.COAST_COLORS, PersonageData.EYES_COLORS, 4);
+  var fragment = document.createDocumentFragment();
 
-wizards.forEach(function (wizard) {
-  var wizardElement = similarWizardTemplate.cloneNode(true);
-  var wizardName = wizardElement.querySelector('.setup-similar-label');
-  var wizardCoat = wizardElement.querySelector('.wizard-coat');
-  var wizardEyes = wizardElement.querySelector('.wizard-eyes');
+  personages.forEach(function (personage) {
+    var wizardElement = similarWizardTemplate.cloneNode(true);
+    var wizardName = wizardElement.querySelector('.setup-similar-label');
+    var wizardCoat = wizardElement.querySelector('.wizard-coat');
+    var wizardEyes = wizardElement.querySelector('.wizard-eyes');
 
-  wizardName.innerText = wizard.firstName + ' ' + wizard.lastName;
-  wizardCoat.setAttribute('style', 'fill: ' + wizard.coastColor + ';');
-  wizardEyes.setAttribute('style', 'fill: ' + wizard.eyesColor + ';');
+    wizardName.innerText = personage.firstName + ' ' + personage.lastName;
+    wizardCoat.setAttribute('style', 'fill: ' + personage.coastColor + ';');
+    wizardEyes.setAttribute('style', 'fill: ' + personage.eyesColor + ';');
 
-  fragment.appendChild(wizardElement);
-});
+    fragment.appendChild(wizardElement);
+  });
 
-similarListElement.appendChild(fragment);
+  similarListElement.appendChild(fragment);
+};
+
+generatePersonagesMarkup(wizards);
+
