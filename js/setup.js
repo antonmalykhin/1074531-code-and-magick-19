@@ -88,6 +88,10 @@ document.querySelector('.setup-similar').classList.remove('hidden');
 
 var wizards = getPersonages(PersonageData, 4);
 
+/**
+ * Функция генерации разметки окна персонажей
+ * @param {array} personages - Список свойств персонажей
+ */
 var generatePersonagesMarkup = function (personages) {
   var similarListElement = document.querySelector('.setup-similar-list');
   var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
