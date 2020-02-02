@@ -168,24 +168,33 @@ var onCloseEnterPress = function (evt) {
   }
 };
 
-var getRandomColor = function (colors) {
-  return colors[Math.floor(Math.random() * colors.length)];
+/**
+ *  Функция случайного выбора значения из массива.
+ * @param {array} array - список значений
+ * @return {*} - случайное значение
+ * @example
+ *
+ * getRandomColor([red, blue, green, white]);
+ * // => [green]
+ */
+var getRandomValue = function (array) {
+  return array[Math.floor(Math.random() * array.length)];
 };
 
 wizardCoatHandler.addEventListener('click', function () {
-  var color = getRandomColor(PersonageData.COAT_COLORS);
+  var color = getRandomValue(PersonageData.COAT_COLORS);
   wizardCoatHandler.style = 'fill: ' + color;
   coatInput.value = color;
 });
 
 wizardEyesHandler.addEventListener('click', function () {
-  var color = getRandomColor(PersonageData.EYES_COLORS);
+  var color = getRandomValue(PersonageData.EYES_COLORS);
   wizardEyesHandler.style = 'fill: ' + color;
   eyesInput.value = color;
 });
 
 wizardFireballHandler.addEventListener('click', function () {
-  var color = getRandomColor(PersonageData.FIREBALL_COLORS);
+  var color = getRandomValue(PersonageData.FIREBALL_COLORS);
   wizardFireballHandler.style = 'background-color: ' + color;
   fireballInput.value = color;
 });
