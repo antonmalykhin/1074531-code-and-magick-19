@@ -39,7 +39,7 @@ var PersonageData = {
    * @constant
    * @type {array}
    */
-  COAST_COLORS: [
+  COAT_COLORS: [
     'rgb(101, 137, 164)',
     'rgb(241, 43, 107)',
     'rgb(146, 100, 161)',
@@ -58,56 +58,187 @@ var PersonageData = {
     'blue',
     'yellow',
     'green'
+  ],
+  /**
+   * Список цветов фаербола персонажа
+   * @constant
+   * @type {array}
+   */
+  FIREBALL_COLORS: [
+    '#ee4830',
+    '#30a8ee',
+    '#5ce6c0',
+    '#e848d5',
+    '#e6e848'
   ]
 };
 
 /**
+ * Кнопка Escape
+ * @constant
+ * @type {string}
+ */
+var ESC_KEY = 'Escape';
+
+/**
+ * Кнопка Enter
+ * @constant
+ * @type {string}
+ */
+var ENTER_KEY = 'Enter';
+
+/**
  * Функция получения списка рандомных свойств определенного количества персонажей
- * @param {array} firstNames - Список имен персонажа
- * @param {array} lastNames - Список фамилий персонажа
- * @param {array} coastColors - Список цветов одежды персонажа
- * @param {array} eyesColors - Список цветов глаз персонажа
+ * @param {array} personage - Объект свойств персонажа
  * @param {number} numOfPersons - Количество генерируемых персонажей
  * @return {array} - Списка рандомных свойств персонажей
  */
-var getPersonages = function (firstNames, lastNames, coastColors, eyesColors, numOfPersons) {
+var getPersonages = function (personage, numOfPersons) {
   var personages = [];
 
   for (var i = 0; i < numOfPersons; i++) {
-    var personage = {};
-    personage.firstName = firstNames[Math.round(Math.random() * firstNames.length)];
-    personage.lastName = lastNames[Math.round(Math.random() * lastNames.length)];
-    personage.coastColor = coastColors[Math.round(Math.random() * coastColors.length)];
-    personage.eyesColor = eyesColors[Math.round(Math.random() * eyesColors.length)];
-
-    personages.push(personage);
+    personages.push({
+      firstName: personage.FIRST_NAMES[Math.round(Math.random() * personage.FIRST_NAMES.length)],
+      lastName: personage.LAST_NAMES[Math.round(Math.random() * personage.LAST_NAMES.length)],
+      coastColor: personage.COAT_COLORS[Math.round(Math.random() * personage.COAT_COLORS.length)],
+      eyesColor: personage.EYES_COLORS[Math.round(Math.random() * personage.EYES_COLORS.length)]
+    });
   }
   return personages;
 };
 
 var userSetup = document.querySelector('.setup');
-userSetup.classList.remove('hidden');
+var closeSetupButton = userSetup.querySelector('.setup-close');
+var openSetupButton = document.querySelector('.setup-open');
+var openSetupIcon = openSetupButton.querySelector('.setup-open-icon');
+var userNameInput = userSetup.querySelector('.setup-user-name');
+var wizardCoatHandler = userSetup.querySelector('.wizard-coat');
+var wizardEyesHandler = userSetup.querySelector('.wizard-eyes');
+var wizardFireballHandler = userSetup.querySelector('.setup-fireball-wrap');
+var coatInput = userSetup.querySelector('input[name=coat-color]');
+var eyesInput = userSetup.querySelector('input[name=eyes-color]');
+var fireballInput = userSetup.querySelector('input[name=fireball-color]');
+/**
+ * Функция нажатия на кнопку Escape
+ * @param {*} evt - event
+ */
+var onEscapeKeyPress = function (evt) {
+  if (evt.key === ESC_KEY && !userSetup.classList.contains('hidden')) {
+    userSetup.classList.add('hidden');
+  }
+};
 
-document.querySelector('.setup-similar').classList.remove('hidden');
+/**
+ * Функция открытия окна настроек персонажа
+ */
+var openSetup = function () {
+  if (userSetup.classList.contains('hidden')) {
+    userSetup.classList.remove('hidden');
+    document.addEventListener('keydown', onEscapeKeyPress);
+  }
+};
 
-var similarListElement = document.querySelector('.setup-similar-list');
-var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+/**
+ * Функция закрытия окна настроек персонажа
+ */
+var closeSetup = function () {
+  if (!userSetup.classList.contains('hidden')) {
+    userSetup.classList.add('hidden');
+    document.removeEventListener('keydown', onEscapeKeyPress);
+  }
+};
 
-var fragment = document.createDocumentFragment();
+/**
+ * Функция нажатия на кнопку Enter при фокусе на иконке пользователя
+ * @param {*} evt - event
+ */
+var onIconEnterPress = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    openSetup();
+  }
+};
 
-var wizards = getPersonages(PersonageData.FIRST_NAMES, PersonageData.LAST_NAMES, PersonageData.COAST_COLORS, PersonageData.EYES_COLORS, 4);
+/**
+ * Функция нажатия на кнопку Enter при фокусе на иконке закрытия
+ * @param {*} evt - event
+ */
+var onCloseEnterPress = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    closeSetup();
+  }
+};
 
-wizards.forEach(function (wizard) {
-  var wizardElement = similarWizardTemplate.cloneNode(true);
-  var wizardName = wizardElement.querySelector('.setup-similar-label');
-  var wizardCoat = wizardElement.querySelector('.wizard-coat');
-  var wizardEyes = wizardElement.querySelector('.wizard-eyes');
+/**
+ *  Функция случайного выбора значения из массива.
+ * @param {array} array - список значений
+ * @return {*} - случайное значение
+ * @example
+ *
+ * getRandomColor([red, blue, green, white]);
+ * // => [green]
+ */
+var getRandomValue = function (array) {
+  return array[Math.floor(Math.random() * array.length)];
+};
 
-  wizardName.innerText = wizard.firstName + ' ' + wizard.lastName;
-  wizardCoat.setAttribute('style', 'fill: ' + wizard.coastColor + ';');
-  wizardEyes.setAttribute('style', 'fill: ' + wizard.eyesColor + ';');
-
-  fragment.appendChild(wizardElement);
+wizardCoatHandler.addEventListener('click', function () {
+  var color = getRandomValue(PersonageData.COAT_COLORS);
+  wizardCoatHandler.style = 'fill: ' + color;
+  coatInput.value = color;
 });
 
-similarListElement.appendChild(fragment);
+wizardEyesHandler.addEventListener('click', function () {
+  var color = getRandomValue(PersonageData.EYES_COLORS);
+  wizardEyesHandler.style = 'fill: ' + color;
+  eyesInput.value = color;
+});
+
+wizardFireballHandler.addEventListener('click', function () {
+  var color = getRandomValue(PersonageData.FIREBALL_COLORS);
+  wizardFireballHandler.style = 'background-color: ' + color;
+  fireballInput.value = color;
+});
+
+userNameInput.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onEscapeKeyPress);
+});
+
+userNameInput.addEventListener('blur', function () {
+  document.addEventListener('keydown', onEscapeKeyPress);
+});
+
+openSetupButton.addEventListener('click', openSetup);
+closeSetupButton.addEventListener('click', closeSetup);
+openSetupIcon.addEventListener('keydown', onIconEnterPress);
+closeSetupButton.addEventListener('keydown', onCloseEnterPress);
+
+var wizards = getPersonages(PersonageData, 4);
+
+/**
+ * Функция генерации разметки окна персонажей
+ * @param {array} personages - Список свойств персонажей
+ */
+var generatePersonageMarkup = function (personages) {
+  var similarListElement = document.querySelector('.setup-similar-list');
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+
+  var fragment = document.createDocumentFragment();
+
+  personages.forEach(function (personage) {
+    var wizardElement = similarWizardTemplate.cloneNode(true);
+    var wizardName = wizardElement.querySelector('.setup-similar-label');
+    var wizardCoat = wizardElement.querySelector('.wizard-coat');
+    var wizardEyes = wizardElement.querySelector('.wizard-eyes');
+
+    wizardName.innerText = personage.firstName + ' ' + personage.lastName;
+    wizardCoat.setAttribute('style', 'fill: ' + personage.coatColor + ';');
+    wizardEyes.setAttribute('style', 'fill: ' + personage.eyesColor + ';');
+
+    fragment.appendChild(wizardElement);
+  });
+
+  similarListElement.appendChild(fragment);
+};
+
+generatePersonageMarkup(wizards);
+
