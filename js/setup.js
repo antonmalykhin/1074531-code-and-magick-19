@@ -98,10 +98,10 @@ var getPersonages = function (personage, numOfPersons) {
 
   for (var i = 0; i < numOfPersons; i++) {
     personages.push({
-      firstName: personage.FIRST_NAMES[Math.round(Math.random() * personage.FIRST_NAMES.length)],
-      lastName: personage.LAST_NAMES[Math.round(Math.random() * personage.LAST_NAMES.length)],
-      coastColor: personage.COAT_COLORS[Math.round(Math.random() * personage.COAT_COLORS.length)],
-      eyesColor: personage.EYES_COLORS[Math.round(Math.random() * personage.EYES_COLORS.length)]
+      firstName: getRandomValue(personage.FIRST_NAMES),
+      lastName: getRandomValue(personage.LAST_NAMES),
+      coastColor: getRandomValue(personage.COAT_COLORS),
+      eyesColor: getRandomValue(personage.EYES_COLORS)
     });
   }
   return personages;
@@ -181,22 +181,26 @@ var getRandomValue = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
 
-wizardCoatHandler.addEventListener('click', function () {
-  var color = getRandomValue(PersonageData.COAT_COLORS);
-  wizardCoatHandler.style = 'fill: ' + color;
-  coatInput.value = color;
-});
+var wizardArea = userSetup.querySelector('.setup-player');
 
-wizardEyesHandler.addEventListener('click', function () {
-  var color = getRandomValue(PersonageData.EYES_COLORS);
-  wizardEyesHandler.style = 'fill: ' + color;
-  eyesInput.value = color;
-});
-
-wizardFireballHandler.addEventListener('click', function () {
-  var color = getRandomValue(PersonageData.FIREBALL_COLORS);
-  wizardFireballHandler.style = 'background-color: ' + color;
-  fireballInput.value = color;
+wizardArea.addEventListener('click', function (evt) {
+  switch (evt.target.classList.value) {
+    case 'setup-fireball':
+      var firebalColor = getRandomValue(PersonageData.FIREBALL_COLORS);
+      wizardFireballHandler.style = 'background-color: ' + firebalColor;
+      fireballInput.value = firebalColor;
+      break;
+    case 'wizard-eyes':
+      var eyesColor = getRandomValue(PersonageData.EYES_COLORS);
+      wizardEyesHandler.style = 'fill: ' + eyesColor;
+      eyesInput.value = eyesColor;
+      break;
+    case 'wizard-coat':
+      var coatColor = getRandomValue(PersonageData.COAT_COLORS);
+      wizardCoatHandler.style = 'fill: ' + coatColor;
+      coatInput = coatColor;
+      break;
+  }
 });
 
 userNameInput.addEventListener('focus', function () {
