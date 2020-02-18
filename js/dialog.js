@@ -6,13 +6,15 @@
   var openSetupButton = document.querySelector('.setup-open');
   var openSetupIcon = openSetupButton.querySelector('.setup-open-icon');
   var userNameInput = userSetup.querySelector('.setup-user-name');
+
   /**
- * Функция нажатия на кнопку Escape
- * @param {*} evt - event
- */
+   * Функция нажатия на кнопку Escape
+   * @param {*} evt - event
+   */
   var onEscapeKeyPress = function (evt) {
     if (evt.key === window.utils.ESC_KEY && !userSetup.classList.contains('hidden')) {
       userSetup.classList.add('hidden');
+      resetUserSetupPosition();
     }
   };
 
@@ -27,12 +29,23 @@
   };
 
   /**
+   * функция сброса положения окна настроек
+   *
+   */
+
+  var resetUserSetupPosition = function () {
+    userSetup.style.top = window.utils.DefaultPosition.TOP;
+    userSetup.style.left = window.utils.DefaultPosition.LEFT;
+  };
+
+  /**
    * Функция закрытия окна настроек персонажа
    */
   var closeSetup = function () {
     if (!userSetup.classList.contains('hidden')) {
       userSetup.classList.add('hidden');
       document.removeEventListener('keydown', onEscapeKeyPress);
+      resetUserSetupPosition();
     }
   };
 
@@ -55,6 +68,7 @@
       closeSetup();
     }
   };
+
 
   userNameInput.addEventListener('focus', function () {
     document.removeEventListener('keydown', onEscapeKeyPress);

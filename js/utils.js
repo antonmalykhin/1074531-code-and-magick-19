@@ -15,6 +15,11 @@
    */
   var ENTER_KEY = 'Enter';
 
+  var DefaultPosition = {
+    TOP: '80px',
+    LEFT: '50%'
+  };
+
   /**
    *  Функция случайного выбора значения из массива.
    * @param {array} array - список значений
@@ -27,6 +32,7 @@
   window.utils = {
     ENTER_KEY: ENTER_KEY,
     ESC_KEY: ESC_KEY,
+    DefaultPosition: DefaultPosition,
     getRandomValue: function (array) {
       return array[Math.floor(Math.random() * array.length)];
     }
