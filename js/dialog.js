@@ -12,7 +12,7 @@
    * @param {*} evt - event
    */
   var onEscapeKeyPress = function (evt) {
-    if (evt.key === window.utils.ESC_KEY && !userSetup.classList.contains('hidden')) {
+    if (evt.key === window.utils.Keys.ESC_KEY && !userSetup.classList.contains('hidden')) {
       userSetup.classList.add('hidden');
       resetUserSetupPosition();
     }
@@ -30,9 +30,7 @@
 
   /**
    * функция сброса положения окна настроек
-   *
    */
-
   var resetUserSetupPosition = function () {
     userSetup.style.top = window.utils.DefaultPosition.TOP;
     userSetup.style.left = window.utils.DefaultPosition.LEFT;
@@ -54,7 +52,7 @@
    * @param {*} evt - event
    */
   var onIconEnterPress = function (evt) {
-    if (evt.key === window.utils.ENTER_KEY) {
+    if (evt.key === window.utils.Keys.ENTER_KEY) {
       openSetup();
     }
   };
@@ -64,7 +62,7 @@
    * @param {*} evt - event
    */
   var onCloseEnterPress = function (evt) {
-    if (evt.key === window.utils.ENTER_KEY) {
+    if (evt.key === window.utils.Keys.ENTER_KEY) {
       closeSetup();
     }
   };

@@ -1,19 +1,23 @@
 'use strict';
 
 (function () {
-  /**
- * Кнопка Escape
- * @constant
- * @type {string}
- */
-  var ESC_KEY = 'Escape';
 
-  /**
-   * Кнопка Enter
+  var Keys = {
+    /**
+   * Кнопка Escape
    * @constant
    * @type {string}
    */
-  var ENTER_KEY = 'Enter';
+    ESC_KEY: 'Escape',
+
+    /**
+     * Кнопка Enter
+     * @constant
+     * @type {string}
+     */
+    ENTER_KEY: 'Enter'
+  }
+
 
   var DefaultPosition = {
     TOP: '80px',
@@ -29,12 +33,13 @@
    * getRandomColor([red, blue, green, white]);
    * // => [green]
    */
+  var getRandomValue = function (array) {
+    return array[Math.floor(Math.random() * array.length)];
+  };
+
   window.utils = {
-    ENTER_KEY: ENTER_KEY,
-    ESC_KEY: ESC_KEY,
+    Keys: Keys,
     DefaultPosition: DefaultPosition,
-    getRandomValue: function (array) {
-      return array[Math.floor(Math.random() * array.length)];
-    }
+    getRandomValue: getRandomValue
   };
 })();
