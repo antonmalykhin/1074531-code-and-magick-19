@@ -16,8 +16,7 @@
      * @type {string}
      */
     ENTER_KEY: 'Enter'
-  }
-
+  };
 
   var DefaultPosition = {
     TOP: '80px',
