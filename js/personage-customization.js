@@ -25,7 +25,7 @@
       case 'wizard-coat':
         var coatColor = window.utils.getRandomValue(window.personageData.COAT_COLORS);
         wizardCoatHandler.style = 'fill: ' + coatColor;
-        coatInput = coatColor;
+        coatInput.value = coatColor;
         break;
     }
   });
