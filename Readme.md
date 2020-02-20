@@ -1,7 +1,7 @@
 # Учебный проект «Код и Магия» [![Build status][travis-image]][travis-url]
 
 - Студент: [Антон Малыхин](https://up.htmlacademy.ru/javascript/19/user/1074531).
-- Наставник: [Антон Попов](https://htmlacademy.ru/profile/joker).
+- Наставник: [Даниил Царёв](https://htmlacademy.ru/profile/id945835).
 
 ---
 
