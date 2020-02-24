@@ -1,52 +1,46 @@
 'use strict';
-
 /**
- * Функция получения списка рандомных свойств определенного количества персонажей
- * @param {array} personage - Объект свойств персонажа
- * @param {number} numOfPersons - Количество генерируемых персонажей
- * @return {array} - Списка рандомных свойств персонажей
+ * Количество похожих персонажей для отображения
+ * @constant
+ * @type {number}
  */
-var getPersonages = function (personage, numOfPersons) {
-  var personages = [];
-
-  for (var i = 0; i < numOfPersons; i++) {
-    personages.push({
-      firstName: window.utils.getRandomValue(personage.FIRST_NAMES),
-      lastName: window.utils.getRandomValue(personage.LAST_NAMES),
-      coastColor: window.utils.getRandomValue(personage.COAT_COLORS),
-      eyesColor: window.utils.getRandomValue(personage.EYES_COLORS)
-    });
-  }
-  return personages;
-};
+var WIZARDS_QUANTITY = 4;
 
 /**
  * Функция генерации разметки окна персонажа
  * @param {array} personages - Список свойств персонажей
+ * @param {array} personagesQuantity - Количество отображаемых персонажей
  */
-var generatePersonageMarkup = function (personages) {
+var generatePersonageMarkup = function (personages, personagesQuantity) {
   var similarListElement = document.querySelector('.setup-similar-list');
   var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
   var fragment = document.createDocumentFragment();
 
-  personages.forEach(function (personage) {
+  for (var i = 0; i < personagesQuantity; i++) {
     var wizardElement = similarWizardTemplate.cloneNode(true);
     var wizardName = wizardElement.querySelector('.setup-similar-label');
     var wizardCoat = wizardElement.querySelector('.wizard-coat');
     var wizardEyes = wizardElement.querySelector('.wizard-eyes');
 
-    wizardName.innerText = personage.firstName + ' ' + personage.lastName;
-    wizardCoat.setAttribute('style', 'fill: ' + personage.coatColor + ';');
-    wizardEyes.setAttribute('style', 'fill: ' + personage.eyesColor + ';');
+    wizardName.innerText = personages[i].name;
+    wizardCoat.setAttribute('style', 'fill: ' + personages[i].colorCoat + ';');
+    wizardEyes.setAttribute('style', 'fill: ' + personages[i].colorEyes + ';');
 
     fragment.appendChild(wizardElement);
-  });
+  }
 
   similarListElement.appendChild(fragment);
 };
 
-var wizards = getPersonages(window.personageData, 4);
+/**
+ * Функция успешной загрузки данных похожих персонажей
+ * @param {Array} wizards - список похожих персонажей
+ */
+var onSuccessLoad = function (wizards) {
+  generatePersonageMarkup(wizards, WIZARDS_QUANTITY);
+  document.querySelector('.setup-similar').classList.remove('hidden');
+};
 
-generatePersonageMarkup(wizards);
+window.backend.load(onSuccessLoad, window.utils.onErrorLoad);
 
