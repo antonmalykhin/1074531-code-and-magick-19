@@ -2,10 +2,11 @@
 
 (function () {
   var userSetup = document.querySelector('.setup');
-  var closeSetupButton = userSetup.querySelector('.setup-close');
+  var form = userSetup.querySelector('.setup-wizard-form');
+  var closeSetupButton = form.querySelector('.setup-close');
   var openSetupButton = document.querySelector('.setup-open');
   var openSetupIcon = openSetupButton.querySelector('.setup-open-icon');
-  var userNameInput = userSetup.querySelector('.setup-user-name');
+  var userNameInput = form.querySelector('.setup-user-name');
 
   /**
    * Функция нажатия на кнопку Escape
@@ -67,7 +68,6 @@
     }
   };
 
-
   userNameInput.addEventListener('focus', function () {
     document.removeEventListener('keydown', onEscapeKeyPress);
   });
@@ -80,4 +80,13 @@
   closeSetupButton.addEventListener('click', closeSetup);
   openSetupIcon.addEventListener('keydown', onIconEnterPress);
   closeSetupButton.addEventListener('keydown', onCloseEnterPress);
+
+  userSetup.querySelector('.setup-similar').classList.remove('hidden');
+
+  form.addEventListener('submit', function (evt) {
+    var data = new FormData(form);
+    window.backend.save(data, closeSetup, window.utils.onErrorLoad);
+    evt.preventDefault();
+  });
+
 })();
