@@ -25,12 +25,17 @@
         eyesColor = window.utils.getRandomValue(window.personageData.EYES_COLORS);
         wizardEyesHandler.style = 'fill: ' + eyesColor;
         eyesInput.value = eyesColor;
+        window.utils.debounce(function () {
+          window.setup.changeWizards(coatColor, eyesColor);
+        });
         break;
       case 'wizard-coat':
         coatColor = window.utils.getRandomValue(window.personageData.COAT_COLORS);
         wizardCoatHandler.style = 'fill: ' + coatColor;
         coatInput.value = coatColor;
-        window.setup.changeWizards(coatColor);
+        window.utils.debounce(function () {
+          window.setup.changeWizards(coatColor, eyesColor);
+        });
         break;
     }
   });
