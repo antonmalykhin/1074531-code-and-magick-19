@@ -1,7 +1,11 @@
 'use strict';
 
 (function () {
-
+  /**
+   * Дефолтные настройки персонажа
+   * @constant
+   * @type {object}
+   */
   var DefaultPersonage = {
     COAT_COLOR: 'rgb(101, 137, 164)',
     EYES_COLOR: 'black',
