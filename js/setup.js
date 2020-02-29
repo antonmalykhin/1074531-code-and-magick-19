@@ -2,58 +2,57 @@
 
 (function () {
 
-  /**
-   * Количество похожих персонажей для отображения
-   * @constant
-   * @type {number}
-   */
-  // var WIZARDS_QUANTITY = 4;
-
-  /**
-   * Функция генерации разметки окна персонажа
-   * @param {array} personages - Список свойств персонажей
-   * @param {array} personagesQuantity - Количество отображаемых персонажей
-   */
-  var generatePersonageMarkup = function (personages) {
-    var similarListElement = document.querySelector('.setup-similar-list');
-    var similarElements = similarListElement.querySelectorAll('.setup-similar-item');
-
-    if (similarElements) {
-      similarElements.forEach(function (element) {
-        similarListElement.removeChild(element);
-      });
-    }
-
-    var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
-
-    var fragment = document.createDocumentFragment();
-
-    for (var i = 0; i < personages.length; i++) {
-      var wizardElement = similarWizardTemplate.cloneNode(true);
-      var wizardName = wizardElement.querySelector('.setup-similar-label');
-      var wizardCoat = wizardElement.querySelector('.wizard-coat');
-      var wizardEyes = wizardElement.querySelector('.wizard-eyes');
-
-      wizardName.innerText = personages[i].name;
-      wizardCoat.setAttribute('style', 'fill: ' + personages[i].colorCoat + ';');
-      wizardEyes.setAttribute('style', 'fill: ' + personages[i].colorEyes + ';');
-
-      fragment.appendChild(wizardElement);
-    }
-
-    similarListElement.appendChild(fragment);
-  };
-
   var tempWizards = [];
 
-  var changeWizards = function (coat) {
+  /**
+   * Функция ранжирования в зависимости от цвета одежды, глаз и фаербола
+   * @param {*} wizard - маг
+   * @param {string} coat - цвет одежды
+   * @param {string} eyes - цвет глаз
+   * @return {number}
+   */
+  var getRank = function (wizard, coat, eyes) {
+    var rank = 0;
+    if (wizard.colorCoat === coat) {
+      rank += 2;
+    }
+    if (wizard.colorEyes === eyes) {
+      rank += 1;
+    }
+    return rank;
+  };
 
-    var filteredWizardsCoat = tempWizards.filter(function (wiz) {
-      return wiz.colorCoat === coat;
+  /**
+   * Функция ранжирования по имени
+   * @param {string} left - первое имя
+   * @param {string} right - второе имя
+   * @return {number}
+   */
+  var namesComparator = function (left, right) {
+    if (left > right) {
+      return 1;
+    } else if (left < right) {
+      return -1;
+    } else {
+      return 0;
+    }
+  };
+
+  /**
+   * Функция изменения отрисовки похожих магов
+   * @param {string} coat - цвет одежды
+   * @param {string} eyes - цвет глаз
+   */
+  var changeWizards = function (coat, eyes) {
+    var sortedWizards = tempWizards.sort(function (left, right) {
+      var rankDiff = getRank(right, coat, eyes) - getRank(left, coat, eyes);
+      if (rankDiff === 0) {
+        rankDiff = namesComparator(left.name, right.name);
+      }
+      return rankDiff;
     });
 
-
-    generatePersonageMarkup(filteredWizardsCoat);
+    window.render.generatePersonageMarkup(sortedWizards);
   };
 
   /**
@@ -63,7 +62,7 @@
   var onSuccessLoad = function (wizards) {
     tempWizards = wizards;
 
-    changeWizards(window.personageCustomization.coatColor);
+    changeWizards(window.personageCustomization.coatColor, window.personageCustomization.eyesColor);
     document.querySelector('.setup-similar').classList.remove('hidden');
   };
 
