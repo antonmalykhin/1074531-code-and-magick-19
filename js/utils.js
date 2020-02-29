@@ -35,6 +35,14 @@
   };
 
   /**
+   * Время таймаута
+   * @constant
+   * @type {number}
+   */
+  var DEBOUNCE_INTERVAL = 300;
+
+
+  /**
    *  Функция случайного выбора значения из массива.
    * @param {array} array - список значений
    * @return {*} - случайное значение
@@ -62,10 +70,20 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
+  var lastTimeout;
+
+  var debounce = function (cb) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(cb, DEBOUNCE_INTERVAL);
+  };
+
   window.utils = {
     Keys: Keys,
     DefaultPosition: DefaultPosition,
     getRandomValue: getRandomValue,
-    onErrorLoad: onErrorLoad
+    onErrorLoad: onErrorLoad,
+    debounce: debounce
   };
 })();
