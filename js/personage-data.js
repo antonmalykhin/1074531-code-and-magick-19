@@ -1,6 +1,16 @@
 'use strict';
 
 (function () {
+  /**
+   * Дефолтные настройки персонажа
+   * @constant
+   * @type {object}
+   */
+  var DefaultPersonage = {
+    COAT_COLOR: 'rgb(101, 137, 164)',
+    EYES_COLOR: 'black',
+    FIREBALL_COLOR: '#ee4830'
+  };
 
   /**
    * Список имен персонажа
@@ -79,6 +89,7 @@
     LAST_NAMES: LAST_NAMES,
     COAT_COLORS: COAT_COLORS,
     EYES_COLORS: EYES_COLORS,
-    FIREBALL_COLORS: FIREBALL_COLORS
+    FIREBALL_COLORS: FIREBALL_COLORS,
+    DefaultPersonage: DefaultPersonage
   };
 })();

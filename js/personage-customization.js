@@ -10,23 +10,40 @@
   var eyesInput = userSetup.querySelector('input[name=eyes-color]');
   var fireballInput = userSetup.querySelector('input[name=fireball-color]');
 
+  var fireballColor = window.personageData.DefaultPersonage.FIREBALL_COLOR;
+  var eyesColor = window.personageData.DefaultPersonage.EYES_COLOR;
+  var coatColor = window.personageData.DefaultPersonage.COAT_COLOR;
+
   wizardArea.addEventListener('click', function (evt) {
     switch (evt.target.classList.value) {
       case 'setup-fireball':
-        var firebalColor = window.utils.getRandomValue(window.personageData.FIREBALL_COLORS);
-        wizardFireballHandler.style = 'background-color: ' + firebalColor;
-        fireballInput.value = firebalColor;
+        fireballColor = window.utils.getRandomValue(window.personageData.FIREBALL_COLORS);
+        wizardFireballHandler.style = 'background-color: ' + fireballColor;
+        fireballInput.value = fireballColor;
         break;
       case 'wizard-eyes':
-        var eyesColor = window.utils.getRandomValue(window.personageData.EYES_COLORS);
+        eyesColor = window.utils.getRandomValue(window.personageData.EYES_COLORS);
         wizardEyesHandler.style = 'fill: ' + eyesColor;
         eyesInput.value = eyesColor;
+        window.utils.debounce(function () {
+          window.setup.changeWizards(coatColor, eyesColor);
+        });
         break;
       case 'wizard-coat':
-        var coatColor = window.utils.getRandomValue(window.personageData.COAT_COLORS);
+        coatColor = window.utils.getRandomValue(window.personageData.COAT_COLORS);
         wizardCoatHandler.style = 'fill: ' + coatColor;
         coatInput.value = coatColor;
+        window.utils.debounce(function () {
+          window.setup.changeWizards(coatColor, eyesColor);
+        });
         break;
     }
   });
+
+  window.personageCustomization = {
+    fireballColor: fireballColor,
+    eyesColor: eyesColor,
+    coatColor: coatColor
+  };
+
 })();
