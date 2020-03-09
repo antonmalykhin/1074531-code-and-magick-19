@@ -7,6 +7,7 @@
   var openSetupButton = document.querySelector('.setup-open');
   var openSetupIcon = openSetupButton.querySelector('.setup-open-icon');
   var userNameInput = form.querySelector('.setup-user-name');
+  var fileChooser = form.querySelector('.upload input[type=file]');
 
   /**
    * Функция нажатия на кнопку Escape
@@ -26,6 +27,7 @@
     if (userSetup.classList.contains('hidden')) {
       userSetup.classList.remove('hidden');
       document.addEventListener('keydown', onEscapeKeyPress);
+      fileChooser.addEventListener('change', window.avatar.onFileChooserChange);
     }
   };
 
@@ -45,6 +47,7 @@
       userSetup.classList.add('hidden');
       document.removeEventListener('keydown', onEscapeKeyPress);
       resetUserSetupPosition();
+      fileChooser.removeEventListener('change', window.avatar.onFileChooserChange);
     }
   };
 
